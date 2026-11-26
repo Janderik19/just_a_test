@@ -1,4 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import logo from "@/assets/logo.png.asset.json";
+import logoBilingue from "@/assets/logo-bilingue.png.asset.json";
+import traditional2 from "@/assets/traditional-2.jpg";
+import traditional3 from "@/assets/traditional-3.jpg";
+import modern2 from "@/assets/modern-2.jpg";
+import modern3 from "@/assets/modern-3.jpg";
+import coffret2 from "@/assets/coffret-2.jpg";
+import coffret3 from "@/assets/coffret-3.jpg";
+import wedding2 from "@/assets/wedding-2.jpg";
+import wedding3 from "@/assets/wedding-3.jpg";
+import savoir2 from "@/assets/savoir-faire-2.jpg";
+import savoir3 from "@/assets/savoir-faire-3.jpg";
 import hero from "@/assets/hero.jpg";
 import traditional from "@/assets/traditional.jpg";
 import modern from "@/assets/modern.jpg";
@@ -31,19 +44,44 @@ export const Route = createFileRoute("/")({
 });
 
 const products = [
-  { img: traditional, name: "Gâteaux traditionnels", text: "Baklawa, makrout, griwech — les recettes de nos grands-mères." },
-  { img: modern, name: "Pâtisseries modernes", text: "Entremets, tartelettes et éclairs aux saveurs délicates." },
-  { img: coffret, name: "Coffrets gourmands", text: "À offrir, pour vos proches ou vos clients d'entreprise." },
+  { imgs: [traditional, traditional2, traditional3], name: "Gâteaux traditionnels", text: "Baklawa, makrout, griwech — les recettes de nos grands-mères." },
+  { imgs: [modern, modern2, modern3], name: "Pâtisseries modernes", text: "Entremets, tartelettes et éclairs aux saveurs délicates." },
+  { imgs: [coffret, coffret2, coffret3], name: "Coffrets gourmands", text: "À offrir, pour vos proches ou vos clients d'entreprise." },
 ];
 
-function Logo() {
+function Logo({ big = false }: { big?: boolean }) {
   return (
-    <a href="#top" className="flex flex-col leading-none">
-      <span className="font-display text-2xl tracking-wide">Maison Sucrée</span>
-      <span className="font-arabic text-sm text-muted-foreground" dir="rtl">
-        دار الحلويات
-      </span>
+    <a href="#top" className="block">
+      <img
+        src={big ? logoBilingue.url : logo.url}
+        alt="Maison Sucrée — المنزل الحلو"
+        className={big ? "h-32 w-auto" : "h-14 w-auto md:h-16"}
+      />
     </a>
+  );
+}
+
+function Gallery({ imgs, alt, aspect = "aspect-[4/5]" }: { imgs: string[]; alt: string; aspect?: string }) {
+  const [i, setI] = useState(0);
+  return (
+    <div>
+      <div className={`${aspect} overflow-hidden bg-blush`}>
+        <img src={imgs[i]} alt={alt} loading="lazy" className="h-full w-full object-cover transition-opacity duration-300" />
+      </div>
+      <div className="mt-3 flex gap-2">
+        {imgs.map((src, k) => (
+          <button
+            key={src}
+            type="button"
+            onClick={() => setI(k)}
+            aria-label={`${alt} — photo ${k + 1}`}
+            className={`h-16 w-16 overflow-hidden border-2 transition ${k === i ? "border-accent" : "border-transparent opacity-70 hover:opacity-100"}`}
+          >
+            <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -67,8 +105,8 @@ function OrderButton({ light = false }: { light?: boolean }) {
 function Index() {
   return (
     <div id="top" className="bg-background text-foreground">
-      <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+      <header className="sticky top-0 z-20 border-b border-border bg-secondary/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-2">
           <Logo />
           <nav className="hidden gap-8 text-sm uppercase tracking-[0.15em] md:flex">
             <a href="#produits" className="hover:text-accent-foreground/70">Produits</a>
@@ -84,9 +122,9 @@ function Index() {
 
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-12 md:grid-cols-2 md:py-20">
         <div>
-          <p className="mb-4 text-xs uppercase tracking-[0.3em] text-muted-foreground">Pâtisserie artisanale · Sétif</p>
+          <p className="mb-4 text-xs uppercase tracking-[0.3em] text-accent">Pâtisserie artisanale · Sétif</p>
           <h1 className="text-5xl leading-[1.05] md:text-7xl">
-            L'art de la douceur, <em className="text-accent-foreground/80">fait main</em>.
+            L'art de la douceur, <em className="text-accent">fait main</em>.
           </h1>
           <p className="mt-6 max-w-md text-lg text-muted-foreground">
             Gâteaux traditionnels, créations modernes et pièces montées, préparés sur commande avec des ingrédients choisis.
@@ -101,13 +139,13 @@ function Index() {
 
       <section id="produits" className="mx-auto max-w-6xl px-5 py-16 md:py-24">
         <div className="mb-12 text-center">
-          <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Les plus appréciés</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-accent">Les plus appréciés</p>
           <h2 className="mt-3 text-4xl md:text-5xl">Nos créations</h2>
         </div>
         <div className="grid gap-10 md:grid-cols-3">
           {products.map((p) => (
             <article key={p.name}>
-              <img src={p.img} alt={p.name} loading="lazy" width={800} height={1008} className="aspect-[4/5] w-full object-cover" />
+              <Gallery imgs={p.imgs} alt={p.name} />
               <h3 className="mt-5 text-2xl">{p.name}</h3>
               <p className="mt-2 text-muted-foreground">{p.text}</p>
             </article>
@@ -115,11 +153,11 @@ function Index() {
         </div>
       </section>
 
-      <section id="savoir-faire" className="bg-muted">
+      <section id="savoir-faire" className="bg-blush">
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:py-24">
-          <img src={savoir} alt="Pâtissière saupoudrant du sucre glace" loading="lazy" width={1008} height={1104} className="aspect-square w-full object-cover" />
+          <Gallery imgs={[savoir, savoir2, savoir3]} alt="Notre savoir-faire" aspect="aspect-square" />
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Notre savoir-faire</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-accent">Notre savoir-faire</p>
             <h2 className="mt-3 text-4xl md:text-5xl">Tout est préparé à la main, chaque jour.</h2>
             <p className="mt-6 text-muted-foreground">
               Depuis trois ans, nous travaillons le miel, les amandes et le beurre avec patience. Chaque commande est réalisée pour vous, jamais à l'avance.
@@ -135,10 +173,10 @@ function Index() {
 
       <section id="evenements" className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:py-24">
         <div className="md:order-2">
-          <img src={wedding} alt="Pièce montée de mariage aux fleurs roses" loading="lazy" width={1008} height={1200} className="aspect-[4/5] w-full object-cover" />
+          <Gallery imgs={[wedding, wedding2, wedding3]} alt="Pièce montée de mariage" />
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Mariages & événements</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-accent">Mariages & événements</p>
           <h2 className="mt-3 text-4xl md:text-5xl">Une pièce montée à votre image.</h2>
           <p className="mt-6 text-muted-foreground">
             Mariages, fiançailles, baptêmes ou fêtes de famille : nous imaginons avec vous le gâteau et les plateaux qui accompagneront votre grand jour.
@@ -161,9 +199,9 @@ function Index() {
         </div>
       </section>
 
-      <footer className="border-t border-border">
+      <footer className="bg-secondary">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
-          <Logo />
+          <Logo big />
           <p>Ouvert du samedi au jeudi · 9h – 19h</p>
           <p>Commandes par téléphone ou WhatsApp · Pas de paiement en ligne</p>
           <p>© {new Date().getFullYear()} Maison Sucrée</p>
