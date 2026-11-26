@@ -1,23 +1,174 @@
 import { createFileRoute } from "@tanstack/react-router";
+import hero from "@/assets/hero.jpg";
+import traditional from "@/assets/traditional.jpg";
+import modern from "@/assets/modern.jpg";
+import coffret from "@/assets/coffret.jpg";
+import wedding from "@/assets/wedding.jpg";
+import savoir from "@/assets/savoir-faire.jpg";
 
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const PHONE = "+213 555 12 34 56";
+const WHATSAPP = "https://wa.me/213555123456";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Maison Sucrée — Pâtisserie artisanale à Sétif" },
+      {
+        name: "description",
+        content:
+          "Gâteaux traditionnels algériens, pâtisseries modernes, pièces montées et coffrets gourmands sur commande à Sétif.",
+      },
+      { property: "og:title", content: "Maison Sucrée — Pâtisserie artisanale à Sétif" },
+      {
+        property: "og:description",
+        content: "Pâtisseries faites main, sur commande par téléphone ou WhatsApp.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+const products = [
+  { img: traditional, name: "Gâteaux traditionnels", text: "Baklawa, makrout, griwech — les recettes de nos grands-mères." },
+  { img: modern, name: "Pâtisseries modernes", text: "Entremets, tartelettes et éclairs aux saveurs délicates." },
+  { img: coffret, name: "Coffrets gourmands", text: "À offrir, pour vos proches ou vos clients d'entreprise." },
+];
+
+function Logo() {
+  return (
+    <a href="#top" className="flex flex-col leading-none">
+      <span className="font-display text-2xl tracking-wide">Maison Sucrée</span>
+      <span className="font-arabic text-sm text-muted-foreground" dir="rtl">
+        دار الحلويات
+      </span>
+    </a>
+  );
+}
+
+function OrderButton({ light = false }: { light?: boolean }) {
+  return (
+    <a
+      href={WHATSAPP}
+      target="_blank"
+      rel="noreferrer"
+      className={
+        light
+          ? "inline-block border border-primary-foreground px-7 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition hover:bg-primary-foreground hover:text-primary"
+          : "inline-block bg-primary px-7 py-3 text-sm uppercase tracking-[0.2em] text-primary-foreground transition hover:opacity-90"
+      }
+    >
+      Commander
+    </a>
+  );
+}
+
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div id="top" className="bg-background text-foreground">
+      <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+          <Logo />
+          <nav className="hidden gap-8 text-sm uppercase tracking-[0.15em] md:flex">
+            <a href="#produits" className="hover:text-accent-foreground/70">Produits</a>
+            <a href="#savoir-faire">Savoir-faire</a>
+            <a href="#evenements">Mariages</a>
+            <a href="#contact">Contact</a>
+          </nav>
+          <a href={`tel:${PHONE.replace(/\s/g, "")}`} className="bg-primary px-4 py-2 text-xs uppercase tracking-[0.15em] text-primary-foreground md:hidden">
+            Appeler
+          </a>
+        </div>
+      </header>
+
+      <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-12 md:grid-cols-2 md:py-20">
+        <div>
+          <p className="mb-4 text-xs uppercase tracking-[0.3em] text-muted-foreground">Pâtisserie artisanale · Sétif</p>
+          <h1 className="text-5xl leading-[1.05] md:text-7xl">
+            L'art de la douceur, <em className="text-accent-foreground/80">fait main</em>.
+          </h1>
+          <p className="mt-6 max-w-md text-lg text-muted-foreground">
+            Gâteaux traditionnels, créations modernes et pièces montées, préparés sur commande avec des ingrédients choisis.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-5">
+            <OrderButton />
+            <a href="#produits" className="border-b border-foreground pb-1 text-sm uppercase tracking-[0.2em]">Nos créations</a>
+          </div>
+        </div>
+        <img src={hero} alt="Assortiment de pâtisseries Maison Sucrée" width={1600} height={1008} className="aspect-[4/5] w-full object-cover md:aspect-[4/5]" />
+      </section>
+
+      <section id="produits" className="mx-auto max-w-6xl px-5 py-16 md:py-24">
+        <div className="mb-12 text-center">
+          <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Les plus appréciés</p>
+          <h2 className="mt-3 text-4xl md:text-5xl">Nos créations</h2>
+        </div>
+        <div className="grid gap-10 md:grid-cols-3">
+          {products.map((p) => (
+            <article key={p.name}>
+              <img src={p.img} alt={p.name} loading="lazy" width={800} height={1008} className="aspect-[4/5] w-full object-cover" />
+              <h3 className="mt-5 text-2xl">{p.name}</h3>
+              <p className="mt-2 text-muted-foreground">{p.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="savoir-faire" className="bg-muted">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:py-24">
+          <img src={savoir} alt="Pâtissière saupoudrant du sucre glace" loading="lazy" width={1008} height={1104} className="aspect-square w-full object-cover" />
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Notre savoir-faire</p>
+            <h2 className="mt-3 text-4xl md:text-5xl">Tout est préparé à la main, chaque jour.</h2>
+            <p className="mt-6 text-muted-foreground">
+              Depuis trois ans, nous travaillons le miel, les amandes et le beurre avec patience. Chaque commande est réalisée pour vous, jamais à l'avance.
+            </p>
+            <ul className="mt-8 grid grid-cols-3 gap-4 border-t border-border pt-6 text-center">
+              <li><span className="block font-display text-3xl">100%</span><span className="text-xs uppercase tracking-widest text-muted-foreground">fait main</span></li>
+              <li><span className="block font-display text-3xl">3 ans</span><span className="text-xs uppercase tracking-widest text-muted-foreground">à Sétif</span></li>
+              <li><span className="block font-display text-3xl">Frais</span><span className="text-xs uppercase tracking-widest text-muted-foreground">sur commande</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="evenements" className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:py-24">
+        <div className="md:order-2">
+          <img src={wedding} alt="Pièce montée de mariage aux fleurs roses" loading="lazy" width={1008} height={1200} className="aspect-[4/5] w-full object-cover" />
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Mariages & événements</p>
+          <h2 className="mt-3 text-4xl md:text-5xl">Une pièce montée à votre image.</h2>
+          <p className="mt-6 text-muted-foreground">
+            Mariages, fiançailles, baptêmes ou fêtes de famille : nous imaginons avec vous le gâteau et les plateaux qui accompagneront votre grand jour.
+          </p>
+          <p className="mt-4 text-sm text-muted-foreground">Nous conseillons de commander 3 semaines à l'avance.</p>
+          <div className="mt-8"><OrderButton /></div>
+        </div>
+      </section>
+
+      <section id="contact" className="bg-primary text-primary-foreground">
+        <div className="mx-auto max-w-4xl px-5 py-16 text-center md:py-24">
+          <h2 className="text-4xl md:text-5xl">Passer commande</h2>
+          <p className="mx-auto mt-4 max-w-md opacity-80">Appelez-nous ou écrivez-nous sur WhatsApp, nous vous répondons rapidement.</p>
+          <div className="mt-10 grid gap-8 text-sm md:grid-cols-3">
+            <div><p className="uppercase tracking-[0.2em] opacity-60">Téléphone</p><a href={`tel:${PHONE.replace(/\s/g, "")}`} className="mt-2 block font-display text-2xl">{PHONE}</a></div>
+            <div><p className="uppercase tracking-[0.2em] opacity-60">Adresse</p><p className="mt-2 font-display text-2xl">Cité des Jardins, Sétif</p></div>
+            <div><p className="uppercase tracking-[0.2em] opacity-60">Réseaux</p><p className="mt-2 flex justify-center gap-4 font-display text-2xl"><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a><a href="https://facebook.com" target="_blank" rel="noreferrer">Facebook</a></p></div>
+          </div>
+          <div className="mt-10"><OrderButton light /></div>
+        </div>
+      </section>
+
+      <footer className="border-t border-border">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
+          <Logo />
+          <p>Ouvert du samedi au jeudi · 9h – 19h</p>
+          <p>Commandes par téléphone ou WhatsApp · Pas de paiement en ligne</p>
+          <p>© {new Date().getFullYear()} Maison Sucrée</p>
+        </div>
+      </footer>
     </div>
   );
 }
